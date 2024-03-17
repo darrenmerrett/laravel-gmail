@@ -16,6 +16,8 @@ trait Configurable
 	protected $additionalScopes = [];
 	private $_config;
 
+	private $token = [];
+
 	public function __construct($config)
 	{
 		$this->_config = $config;
@@ -31,13 +33,17 @@ trait Configurable
 			} else {
 				return $config;
 			}
-
 		}
 
 		return null;
 	}
 
-	protected function getAccessTokenFromCache(): ?array {
+	protected function getAccessTokenFromCache(): ?array
+	{
+		if (count($this->token) > 0) {
+			return $this->$token;
+		}
+
 		$file = $this->getFullFilePath();
 
 		$d = $this->getCacheStore()->get($file);
@@ -46,7 +52,7 @@ trait Configurable
 			if (!$this->_config['gmail.disable_json_encrypt']) {
 				$d = decrypt($d);
 			}
-			return json_decode($d, true);
+			return $this->$token = json_decode($d, true);
 		}
 
 		return null;
@@ -54,6 +60,8 @@ trait Configurable
 
 	protected function saveAccessTokenInCache(array $config): void {
 		$file = $this->getFullFilePath();
+
+		$this->$token = $config;
 
 		$config = json_encode($config);
 

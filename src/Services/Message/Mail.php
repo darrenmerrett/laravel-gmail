@@ -248,6 +248,13 @@ class Mail extends GmailConnection
 			];
 		}
 
+		if (!$from) {
+			return [
+				'name'  => '',
+				'email' => '',
+			];
+		}
+
 		preg_match('/<(.*)>/', $from, $matches);
 
 		$name = preg_replace('/ <(.*)>/', '', $from);
