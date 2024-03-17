@@ -33,7 +33,10 @@ return [
 	'client_secret' => env('GOOGLE_CLIENT_SECRET'),
 	'redirect_url' => env('GOOGLE_REDIRECT_URI', '/'),
 
-	'tokenCacheStore' => 'file',
+	'cache' => [
+		'prefix' => '',
+		'store' => 'file',
+	],
 
 	'state' => null,
 

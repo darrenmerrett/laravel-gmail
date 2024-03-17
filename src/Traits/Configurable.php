@@ -85,7 +85,7 @@ trait Configurable
 			$userId = auth()->user()->id;
 		}
 
-		$credentialFilename = $this->_config['gmail.credentials_file_name'];
+		$credentialFilename = Arr::get($this->_config, 'gmail.cache.prefix', '').'-'.$this->_config['gmail.credentials_file_name'];
 		$allowMultipleCredentials = $this->_config['gmail.allow_multiple_credentials'];
 
 		if (isset($userId) && $allowMultipleCredentials) {
@@ -135,7 +135,11 @@ trait Configurable
 	}
 
 	private function getCacheStore(): Repository {
-		return app('cache')->store($this->_config['tokenCacheStore']);
+		$c = app('cache');
+		if ($store = Arr::get($this->_config, 'gmail.cache.store')) {
+			$c = $c->store($store);
+		}
+		return $c;
 	}
 
 	private function mapScopes()
