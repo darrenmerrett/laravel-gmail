@@ -33,6 +33,8 @@ return [
 	'client_secret' => env('GOOGLE_CLIENT_SECRET'),
 	'redirect_url' => env('GOOGLE_REDIRECT_URI', '/'),
 
+	'tokenCacheStore' => 'file',
+
 	'state' => null,
 
 	'scopes' => [
@@ -95,5 +97,5 @@ return [
 	|
 	*/
 
-	'allow_json_encrypt' => env('GOOGLE_ALLOW_JSON_ENCRYPT', false),
+	'disable_json_encrypt' => env('GOOGLE_DISABLE_JSON_ENCRYPT', false),
 ];

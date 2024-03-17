@@ -8,8 +8,6 @@ use Google_Client;
 use Google_Service_Gmail;
 use Google_Service_Gmail_WatchRequest;
 use Illuminate\Container\Container;
-use Illuminate\Support\Facades\Request;
-use Illuminate\Support\Facades\Storage;
 
 class GmailConnection extends Google_Client
 {
@@ -54,16 +52,7 @@ class GmailConnection extends Google_Client
 	 */
 	public function checkPreviouslyLoggedIn()
 	{
-		$fileName = $this->getFileName();
-		$file = "gmail/tokens/$fileName.json";
-		$allowJsonEncrypt = $this->_config['gmail.allow_json_encrypt'];
-
-		if (Storage::disk('local')->exists($file)) {
-			if ($allowJsonEncrypt) {
-				$savedConfigToken = json_decode(decrypt(Storage::disk('local')->get($file)), true);
-			} else {
-				$savedConfigToken = json_decode(Storage::disk('local')->get($file), true);
-			}
+		if ($savedConfigToken = $this->getAccessTokenFromCache()) {
 
 			return !empty($savedConfigToken['access_token']);
 
@@ -149,33 +138,18 @@ class GmailConnection extends Google_Client
 	 */
 	public function saveAccessToken(array $config)
 	{
-		$disk = Storage::disk('local');
-		$fileName = $this->getFileName();
-		$file = "gmail/tokens/$fileName.json";
-		$allowJsonEncrypt = $this->_config['gmail.allow_json_encrypt'];
+
 		$config['email'] = $this->emailAddress;
 
-		if ($disk->exists($file)) {
-
+		if ($savedConfigToken = $this->getAccessTokenFromCache()) {
 			if (empty($config['email'])) {
-				if ($allowJsonEncrypt) {
-					$savedConfigToken = json_decode(decrypt($disk->get($file)), true);
-				} else {
-					$savedConfigToken = json_decode($disk->get($file), true);
-				}
 				if (isset($savedConfigToken['email'])) {
 					$config['email'] = $savedConfigToken['email'];
 				}
 			}
-
-			$disk->delete($file);
 		}
 
-		if ($allowJsonEncrypt) {
-			$disk->put($file, encrypt(json_encode($config)));
-		} else {
-			$disk->put($file, json_encode($config));
-		}
+		$this->saveAccessTokenInCache($config);
 
 	}
 
@@ -186,7 +160,7 @@ class GmailConnection extends Google_Client
 	public function makeToken()
 	{
 		if (!$this->check()) {
-			$request = Request::capture();
+			$request = app('request')->capture();
 			$code = (string)$request->input('code', null);
 			if (!is_null($code) && !empty($code)) {
 				$accessToken = $this->fetchAccessTokenWithAuthCode($code);
@@ -236,29 +210,6 @@ class GmailConnection extends Google_Client
 	public function logout()
 	{
 		$this->revokeToken();
-	}
-
-	/**
-	 * Delete the credentials in a file
-	 */
-	public function deleteAccessToken()
-	{
-		$disk = Storage::disk('local');
-		$fileName = $this->getFileName();
-		$file = "gmail/tokens/$fileName.json";
-
-		$allowJsonEncrypt = $this->_config['gmail.allow_json_encrypt'];
-
-		if ($disk->exists($file)) {
-			$disk->delete($file);
-		}
-
-		if ($allowJsonEncrypt) {
-			$disk->put($file, encrypt(json_encode([])));
-		} else {
-			$disk->put($file, json_encode([]));
-		}
-
 	}
 
 	private function haveReadScope()

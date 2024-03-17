@@ -3,7 +3,7 @@
 namespace Dacastro4\LaravelGmail\Traits;
 
 use Google_Service_Gmail;
-use Illuminate\Support\Facades\Storage;
+use Illuminate\Cache\Repository;
 use Illuminate\Support\Arr;
 
 /**
@@ -23,18 +23,7 @@ trait Configurable
 
 	public function config($string = null)
 	{
-		$disk = Storage::disk('local');
-		$fileName = $this->getFileName();
-		$file = "gmail/tokens/$fileName.json";
-		$allowJsonEncrypt = $this->_config['gmail.allow_json_encrypt'];
-
-		if ($disk->exists($file)) {
-			if ($allowJsonEncrypt) {
-				$config = json_decode(decrypt($disk->get($file)), true);
-			} else {
-				$config = json_decode($disk->get($file), true);
-			}
-
+		if ($config = $this->getAccessTokenFromCache()) {
 			if ($string) {
 				if (isset($config[$string])) {
 					return $config[$string];
@@ -46,6 +35,46 @@ trait Configurable
 		}
 
 		return null;
+	}
+
+	protected function getAccessTokenFromCache(): ?array {
+		$file = $this->getFullFilePath();
+
+		$d = $this->getCacheStore()->get($file);
+
+		if ($d) {
+			if (!$this->_config['gmail.disable_json_encrypt']) {
+				$d = decrypt($d);
+			}
+			return json_decode($d, true);
+		}
+
+		return null;
+	}
+
+	protected function saveAccessTokenInCache(array $config): void {
+		$file = $this->getFullFilePath();
+
+		$config = json_encode($config);
+
+		if (!$this->_config['gmail.disable_json_encrypt']) {
+			$config = encrypt($config);
+		}
+
+		$this->getCacheStore()->forever($file, $config);
+	}
+
+	/**
+	 * Delete the credentials in a file
+	 */
+	protected function deleteAccessTokenFromCache()
+	{
+		$this->saveAccessTokenInCache([]);
+	}
+
+	private function getFullFilePath(): string {
+		$fileName = $this->getFileName();
+		return "gmail/tokens/$fileName.json";
 	}
 
 	private function getFileName()
@@ -103,6 +132,10 @@ trait Configurable
 	private function getUserScopes()
 	{
 		return $this->mapScopes();
+	}
+
+	private function getCacheStore(): Repository {
+		return app('cache')->store($this->_config['tokenCacheStore']);
 	}
 
 	private function mapScopes()

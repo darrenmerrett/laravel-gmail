@@ -10,7 +10,7 @@ class LaravelGmailClass extends GmailConnection
 {
 	public function __construct($config, $userId = null)
 	{
-		if (class_basename($config) === 'Application') {
+		if (!is_array($config) && class_basename($config) === 'Application') {
 			$config = $config['config'];
 		}
 
@@ -53,7 +53,7 @@ class LaravelGmailClass extends GmailConnection
 
 	public function redirect()
 	{
-		return Redirect::to($this->getAuthUrl());
+		return redirect()->to($this->getAuthUrl());
 	}
 
 	/**
@@ -69,7 +69,7 @@ class LaravelGmailClass extends GmailConnection
 	public function logout()
 	{
 		$this->revokeToken();
-		$this->deleteAccessToken();
+		$this->deleteAccessTokenFromCache();
 	}
 
 }
