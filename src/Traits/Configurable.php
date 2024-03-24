@@ -12,7 +12,6 @@ use Illuminate\Support\Arr;
  */
 trait Configurable
 {
-
 	protected $additionalScopes = [];
 	private $_config;
 
@@ -58,7 +57,8 @@ trait Configurable
 		return null;
 	}
 
-	protected function saveAccessTokenInCache(array $config): void {
+	protected function saveAccessTokenInCache(array $config): void
+	{
 		$file = $this->getFullFilePath();
 
 		$this->fetchedToken = $config;
@@ -80,14 +80,15 @@ trait Configurable
 		$this->saveAccessTokenInCache([]);
 	}
 
-	private function getFullFilePath(): string {
+	private function getFullFilePath(): string
+	{
 		$fileName = $this->getFileName();
 		return "gmail/tokens/$fileName.json";
 	}
 
 	private function getFileName()
 	{
-		if (property_exists(get_class($this), 'userId') && $this->userId) {
+		if (property_exists(\get_class($this), 'userId') && $this->userId) {
 			$userId = $this->userId;
 		} elseif (auth()->user()) {
 			$userId = auth()->user()->id;
@@ -135,14 +136,15 @@ trait Configurable
 		$this->setApprovalPrompt($approval_prompt);
 	}
 
-	public abstract function setScopes($scopes);
+	abstract public function setScopes($scopes);
 
 	private function getUserScopes()
 	{
 		return $this->mapScopes();
 	}
 
-	private function getCacheStore(): Repository {
+	private function getCacheStore(): Repository
+	{
 		$c = app('cache');
 		if ($store = Arr::get($this->_config, 'gmail.cache.store')) {
 			$c = $c->store($store);
@@ -183,8 +185,7 @@ trait Configurable
 		return Arr::get($scopes, $scope);
 	}
 
-	public abstract function setAccessType($type);
+	abstract public function setAccessType($type);
 
-	public abstract function setApprovalPrompt($approval);
-
+	abstract public function setApprovalPrompt($approval);
 }

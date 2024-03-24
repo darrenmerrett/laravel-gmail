@@ -10,9 +10,9 @@ use Google_Service_Gmail;
 
 class Message
 {
+	use SendsParameters;
 
-	use SendsParameters,
-		Filterable;
+	use Filterable;
 
 	public $service;
 
@@ -65,7 +65,7 @@ class Message
 	 */
 	public function all(string $pageToken = null)
 	{
-		if (!is_null($pageToken)) {
+		if (!\is_null($pageToken)) {
 			$this->add($pageToken, 'pageToken');
 		}
 
@@ -80,7 +80,7 @@ class Message
 				$mails[] = new Mail($message, $this->preload, $this->client->userId);
 			}
 		} else {
-			$mails = count($messages) > 0 ? $this->batchRequest($messages) : [];
+			$mails = \count($messages) > 0 ? $this->batchRequest($messages) : [];
 		}
 
 		return new MessageCollection($mails, $this);
@@ -204,9 +204,11 @@ class Message
 	{
 		$responseOrRequest = $this->service->users_messages->listUsersMessages('me', $this->params);
 
-		if (get_class($responseOrRequest) === "GuzzleHttp\Psr7\Request") {
-			$response = $this->service->getClient()->execute($responseOrRequest,
-				'Google_Service_Gmail_ListMessagesResponse');
+		if (\get_class($responseOrRequest) === "GuzzleHttp\Psr7\Request") {
+			$response = $this->service->getClient()->execute(
+				$responseOrRequest,
+				'Google_Service_Gmail_ListMessagesResponse'
+			);
 
 			return $response;
 		}

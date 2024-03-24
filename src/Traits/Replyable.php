@@ -158,7 +158,7 @@ trait Replyable
 
 	private function emailList($list, $name = null)
 	{
-		if (is_array($list)) {
+		if (\is_array($list)) {
 			return $this->convertEmailList($list, $name);
 		} else {
 			return $list;
@@ -261,9 +261,7 @@ trait Replyable
 	 */
 	public function attach(...$files)
 	{
-
 		foreach ($files as $file) {
-
 			if (!file_exists($file)) {
 				throw new FileNotFoundException($file);
 			}
@@ -322,7 +320,7 @@ trait Replyable
 		return new Mail($this->service->users_messages->send('me', $body, $this->parameters));
 	}
 
-	public abstract function getId();
+	abstract public function getId();
 
 	private function setReplyThread()
 	{
@@ -346,7 +344,7 @@ trait Replyable
 		return null;
 	}
 
-	public abstract function getThreadId();
+	abstract public function getThreadId();
 
 	/**
 	 * Add a header to the email
@@ -397,11 +395,11 @@ trait Replyable
 		}
 	}
 
-	public abstract function getSubject();
+	abstract public function getSubject();
 
-	public abstract function getReplyTo();
+	abstract public function getReplyTo();
 
-	public abstract function getUser();
+	abstract public function getUser();
 
 	/**
 	 * @return Google_Service_Gmail_Message
@@ -443,7 +441,7 @@ trait Replyable
 		if ($cc) {
 			$final = $this->cc;
 
-			if (is_array($this->cc)) {
+			if (\is_array($this->cc)) {
 				foreach ($this->cc as $emailCc => $nameCc) {
 					$final[] = new Address($emailCc, $nameCc);
 				}
@@ -492,5 +490,5 @@ trait Replyable
 		return $this;
 	}
 
-	protected abstract function setMessage(\Google_Service_Gmail_Message $message);
+	abstract protected function setMessage(\Google_Service_Gmail_Message $message);
 }

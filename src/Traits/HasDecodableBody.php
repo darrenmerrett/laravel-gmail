@@ -4,7 +4,6 @@ namespace DarrenMerrett\LaravelGmail\Traits;
 
 trait HasDecodableBody
 {
-
 	/**
 	 * @param $content
 	 *
@@ -16,5 +15,4 @@ trait HasDecodableBody
 
 		return base64_decode($content);
 	}
-
 }

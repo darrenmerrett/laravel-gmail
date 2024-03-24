@@ -42,7 +42,6 @@ class GmailConnection extends Google_Client
 		if ($this->checkPreviouslyLoggedIn()) {
 			$this->refreshTokenIfNeeded();
 		}
-
 	}
 
 	/**
@@ -53,9 +52,7 @@ class GmailConnection extends Google_Client
 	public function checkPreviouslyLoggedIn()
 	{
 		if ($savedConfigToken = $this->getAccessTokenFromCache()) {
-
 			return !empty($savedConfigToken['access_token']);
-
 		}
 
 		return false;
@@ -138,7 +135,6 @@ class GmailConnection extends Google_Client
 	 */
 	public function saveAccessToken(array $config)
 	{
-
 		$config['email'] = $this->emailAddress;
 
 		if ($savedConfigToken = $this->getAccessTokenFromCache()) {
@@ -165,7 +161,7 @@ class GmailConnection extends Google_Client
 		if (!$this->check()) {
 			$request = app('request')->capture();
 			$code = (string)$request->input('code', null);
-			if (!is_null($code) && !empty($code)) {
+			if (!\is_null($code) && !empty($code)) {
 				$accessToken = $this->fetchAccessTokenWithAuthCode($code);
 				if ($this->haveReadScope()) {
 					$me = $this->getProfile();
@@ -219,7 +215,7 @@ class GmailConnection extends Google_Client
 	{
 		$scopes = $this->getUserScopes();
 
-		return in_array(Google_Service_Gmail::GMAIL_READONLY, $scopes);
+		return \in_array(Google_Service_Gmail::GMAIL_READONLY, $scopes);
 	}
 
 	/**

@@ -7,7 +7,6 @@ use Illuminate\Support\ServiceProvider;
 
 class LaravelGmailServiceProvider extends ServiceProvider
 {
-
 	public function boot()
 	{
 		$this->publishes([__DIR__ . '/config/gmail.php' => base_path('config/gmail.php')]);
@@ -15,7 +14,6 @@ class LaravelGmailServiceProvider extends ServiceProvider
 
 	public function register()
 	{
-
 		$this->mergeConfigFrom(__DIR__ . '/config/gmail.php', 'gmail');
 
 		$this->app->configure('gmail');
@@ -24,6 +22,5 @@ class LaravelGmailServiceProvider extends ServiceProvider
 		$this->app->bind('laravelgmail', function ($app) {
 			return new LaravelGmailClass($app['config']);
 		});
-
 	}
 }

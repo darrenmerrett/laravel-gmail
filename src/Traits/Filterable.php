@@ -18,7 +18,7 @@ trait Filterable
 		return $this;
 	}
 
-	public abstract function add($query, $column = 'q', $encode = true);
+	abstract public function add($query, $column = 'q', $encode = true);
 
 	/**
 	 * Filter to get only unread emalis
@@ -57,7 +57,7 @@ trait Filterable
 	 */
 	public function fromThese(array $emails)
 	{
-		$emailsCount = count($emails);
+		$emailsCount = \count($emails);
 		for ($i = 0; $i < $emailsCount; $i++) {
 			!$i ? $this->add("{from:$emails[$i]") : ($i == $emailsCount - 1 ? $this->add("from:$emails[$i]}") : $this->from($emails[$i]));
 		}

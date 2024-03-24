@@ -4,7 +4,6 @@ namespace DarrenMerrett\LaravelGmail\Traits;
 
 trait HasHeaders
 {
-
 	/**
 	 * Gets a single header from an existing email by name.
 	 *
@@ -23,20 +22,19 @@ trait HasHeaders
 		foreach ($headers as $header) {
 			if ($header->key === $headerName) {
 				$value = $header->value;
-				if (!is_null($regex)) {
+				if (!\is_null($regex)) {
 					preg_match_all($regex, $header->value, $value);
 				}
 				break;
 			}
 		}
 
-		if (is_array($value)) {
+		if (\is_array($value)) {
 			return isset($value[1]) ? $value[1] : null;
 		}
 
 		return $value;
 	}
 
-	public abstract function getHeaders();
-
+	abstract public function getHeaders();
 }

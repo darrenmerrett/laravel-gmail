@@ -10,7 +10,6 @@ use Google_Service_Gmail;
  */
 trait Modifiable
 {
-
 	use ModifiesLabels {
 		ModifiesLabels::__construct as private __mlConstruct;
 	}

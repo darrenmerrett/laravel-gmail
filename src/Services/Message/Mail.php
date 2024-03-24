@@ -20,14 +20,13 @@ use Illuminate\Support\Str;
  */
 class Mail extends GmailConnection
 {
-
 	use HasDecodableBody,
 		Modifiable,
 		HasParts,
 		Replyable {
-		Replyable::__construct as private __rConstruct;
-		Modifiable::__construct as private __mConstruct;
-	}
+			Replyable::__construct as private __rConstruct;
+			Modifiable::__construct as private __mConstruct;
+		}
 
 	/**
 	 * @var
@@ -59,10 +58,10 @@ class Mail extends GmailConnection
 	 */
 	public $threadId;
 
-    /**
-     * @var
-     */
-    public $historyId;
+	/**
+	 * @var
+	 */
+	public $historyId;
 
 	/**
 	 * @var \Google_Service_Gmail_MessagePart
@@ -76,7 +75,7 @@ class Mail extends GmailConnection
 	 */
 	public $service;
 
-    /**
+	/**
 	 * SingleMessage constructor.
 	 *
 	 * @param \Google_Service_Gmail_Message $message
@@ -91,7 +90,7 @@ class Mail extends GmailConnection
 		$this->__mConstruct();
 		parent::__construct(config(), $userId);
 
-		if (!is_null($message)) {
+		if (!\is_null($message)) {
 			if ($preload) {
 				$message = $this->service->users_messages->get('me', $message->getId());
 			}
@@ -346,7 +345,6 @@ class Mail extends GmailConnection
 		$explodedEmails = explode(',', $emails);
 
 		foreach ($explodedEmails as $email) {
-
 			$item = [];
 
 			preg_match('/<(.*)>/', $email, $matches);
@@ -362,7 +360,6 @@ class Mail extends GmailConnection
 			$item['name'] = str_replace("\"", '', $name ?: null);
 
 			$all[] = $item;
-
 		}
 
 		return $all;
@@ -427,7 +424,7 @@ class Mail extends GmailConnection
 				foreach ($parts as $part) {
 					if ($part->mimeType == $type) {
 						return $part->body->data;
-					        //if there are no parts in payload, try to get data from body->data
+					//if there are no parts in payload, try to get data from body->data
 					} elseif ($this->payload->body->data) {
 						return $this->payload->body->data;
 					}
@@ -454,7 +451,7 @@ class Mail extends GmailConnection
 
 		/** @var Google_Service_Gmail_MessagePart $part */
 		foreach ($parts as $part) {
-			if (!empty($part->body->attachmentId) && $part->getFilename() != null && strlen($part->getFilename()) > 0) {
+			if (!empty($part->body->attachmentId) && $part->getFilename() != null && \strlen($part->getFilename()) > 0) {
 				$has = true;
 				break;
 			}

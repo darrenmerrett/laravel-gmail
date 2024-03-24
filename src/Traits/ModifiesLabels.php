@@ -7,7 +7,6 @@ use Google_Service_Gmail_ModifyMessageRequest;
 
 trait ModifiesLabels
 {
-
 	private $messageRequest;
 
 	public function __construct()
@@ -25,7 +24,7 @@ trait ModifiesLabels
 	 */
 	public function addLabel($labels)
 	{
-		if (is_string($labels)) {
+		if (\is_string($labels)) {
 			$labels = [$labels];
 		}
 
@@ -48,7 +47,7 @@ trait ModifiesLabels
 		return new Mail($this->service->users_messages->modify('me', $this->getId(), $this->messageRequest));
 	}
 
-	public abstract function getId();
+	abstract public function getId();
 
 	/**
 	 * Removes labels from the email
@@ -60,7 +59,7 @@ trait ModifiesLabels
 	 */
 	public function removeLabel($labels)
 	{
-		if (is_string($labels)) {
+		if (\is_string($labels)) {
 			$labels = [$labels];
 		}
 
