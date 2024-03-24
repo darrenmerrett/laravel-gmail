@@ -149,8 +149,11 @@ class GmailConnection extends Google_Client
 			}
 		}
 
-		$this->saveAccessTokenInCache($config);
+		if (empty($config['refresh_token'])) {
+			$config['refresh_token'] = $savedConfigToken['refresh_token'];
+		}
 
+		$this->saveAccessTokenInCache($config);
 	}
 
 	/**
