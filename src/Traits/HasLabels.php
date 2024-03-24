@@ -1,6 +1,6 @@
 <?php
 
-namespace Dacastro4\LaravelGmail\Traits;
+namespace DarrenMerrett\LaravelGmail\Traits;
 
 use Google_Service_Gmail;
 

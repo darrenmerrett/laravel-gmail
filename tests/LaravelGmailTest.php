@@ -1,6 +1,6 @@
 <?php
 
-use Dacastro4\LaravelGmail\Services\Message\Mail;
+use DarrenMerrett\LaravelGmail\Services\Message\Mail;
 use Illuminate\Container\Container;
 use Illuminate\Mail\Markdown;
 use Tests\TestCase;

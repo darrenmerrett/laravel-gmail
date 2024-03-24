@@ -1,9 +1,9 @@
 <?php
 
-namespace Dacastro4\LaravelGmail\Services\Message;
+namespace DarrenMerrett\LaravelGmail\Services\Message;
 
-use Dacastro4\LaravelGmail\GmailConnection;
-use Dacastro4\LaravelGmail\Traits\HasDecodableBody;
+use DarrenMerrett\LaravelGmail\GmailConnection;
+use DarrenMerrett\LaravelGmail\Traits\HasDecodableBody;
 use Google_Service_Gmail;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;

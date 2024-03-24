@@ -1,9 +1,9 @@
 <?php
 
-namespace Dacastro4\LaravelGmail;
+namespace DarrenMerrett\LaravelGmail;
 
-use Dacastro4\LaravelGmail\Traits\Configurable;
-use Dacastro4\LaravelGmail\Traits\HasLabels;
+use DarrenMerrett\LaravelGmail\Traits\Configurable;
+use DarrenMerrett\LaravelGmail\Traits\HasLabels;
 use Google_Client;
 use Google_Service_Gmail;
 use Google_Service_Gmail_WatchRequest;

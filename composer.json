@@ -1,5 +1,5 @@
 {
-    "name": "dacastro4/laravel-gmail",
+    "name": "darrenmerrett/laravel-gmail",
     "description": "Gmail API package for Laravel",
     "keywords": [
         "api",
@@ -34,7 +34,7 @@
     },
     "autoload": {
         "psr-4": {
-            "Dacastro4\\LaravelGmail\\": "src/"
+            "DarrenMerrett\\LaravelGmail\\": "src/"
         }
     },
     "autoload-dev": {
@@ -45,10 +45,10 @@
     "extra": {
         "laravel": {
             "providers": [
-                "Dacastro4\\LaravelGmail\\LaravelGmailServiceProvider"
+                "DarrenMerrett\\LaravelGmail\\LaravelGmailServiceProvider"
             ],
             "aliases": {
-                "LaravelGmail": "Dacastro4\\LaravelGmail\\Facade\\LaravelGmail"
+                "LaravelGmail": "DarrenMerrett\\LaravelGmail\\Facade\\LaravelGmail"
             }
         }
     },
