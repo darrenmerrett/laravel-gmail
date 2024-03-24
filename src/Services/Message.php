@@ -135,19 +135,34 @@ class Message
 
 		$batch = $this->service->createBatch();
 
-		foreach ($allMessages as $key => $message) {
-			$batch->add($this->getRequest($message->getId()), $key);
-		}
-
-		$messagesBatch = $batch->execute();
-
-		$this->client->setUseBatch(false);
-
+		$c = 0;
 		$messages = [];
 
-		foreach ($messagesBatch as $message) {
-			$messages[] = new Mail($message, false, $this->client->userId);
+		foreach ($allMessages as $key => $message) {
+			if (!$batch) {
+				$batch = $this->service->createBatch();
+			}
+			$batch->add($this->getRequest($message->getId()), $key);
+			$c++;
+
+			if ($c/23 === \intval($c/23)) {
+				$messagesBatch = $batch->execute();
+				foreach ($messagesBatch as $message) {
+					$messages[] = new Mail($message, false, $this->client->userId);
+				}
+				$batch = null;
+				sleep(1);
+			}
 		}
+
+		if ($batch) {
+			$messagesBatch = $batch->execute();
+			foreach ($messagesBatch as $message) {
+				$messages[] = new Mail($message, false, $this->client->userId);
+			}
+		}
+
+		$this->client->setUseBatch(false);
 
 		return $messages;
 	}
