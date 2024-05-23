@@ -145,7 +145,7 @@ class GmailConnection extends Google_Client
 			}
 		}
 
-		if (empty($config['refresh_token'])) {
+		if ($savedConfigToken && empty($config['refresh_token'])) {
 			$config['refresh_token'] = $savedConfigToken['refresh_token'];
 		}
 

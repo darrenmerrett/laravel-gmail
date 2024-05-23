@@ -22,5 +22,7 @@ class LaravelGmailServiceProvider extends ServiceProvider
 		$this->app->bind('laravelgmail', function ($app) {
 			return new LaravelGmailClass($app['config']);
 		});
+
+		$this->loadMigrationsFrom(__DIR__.'/Migrations/');
 	}
 }

@@ -2,6 +2,7 @@
 
 namespace DarrenMerrett\LaravelGmail\Traits;
 
+use DarrenMerrett\LaravelGmail\gmail_tokens;
 use Google_Service_Gmail;
 use Illuminate\Cache\Repository;
 use Illuminate\Support\Arr;
@@ -15,7 +16,7 @@ trait Configurable
 	protected $additionalScopes = [];
 	private $_config;
 
-	private $fetchedToken = [];
+	private $fetchedToken;
 
 	public function __construct($config)
 	{
@@ -39,51 +40,30 @@ trait Configurable
 
 	protected function getAccessTokenFromCache(): ?array
 	{
-		if (\count($this->fetchedToken) > 0) {
+		if ($this->fetchedToken) {
 			return $this->fetchedToken;
 		}
 
-		$file = $this->getFullFilePath();
-
-		$d = $this->getCacheStore()->get($file);
-
-		if ($d) {
-			if (!$this->_config['gmail.disable_json_encrypt']) {
-				$d = decrypt($d);
-			}
-			return $this->fetchedToken = json_decode($d, true);
+		if ($this->fetchedToken = gmail_tokens::where('userId', $this->userId)->first()) {
+			$this->fetchedToken = $this->fetchedToken->toArray();
 		}
 
-		return null;
+		return $this->fetchedToken;
 	}
 
 	protected function saveAccessTokenInCache(array $config): void
 	{
-		$file = $this->getFullFilePath();
+		$db = gmail_tokens::firstOrNew(['userId' => $this->userId]);
+		$db->fill($config);
+		$db->userId = $this->userId;
+		$db->save();
 
-		$this->fetchedToken = $config;
-
-		$config = json_encode($config);
-
-		if (!$this->_config['gmail.disable_json_encrypt']) {
-			$config = encrypt($config);
-		}
-
-		$this->getCacheStore()->forever($file, $config);
+		$this->fetchedToken = $db->toArray();
 	}
 
-	/**
-	 * Delete the credentials in a file
-	 */
-	protected function deleteAccessTokenFromCache()
+	protected function deleteAccessTokenFromCache(): void
 	{
-		$this->saveAccessTokenInCache([]);
-	}
-
-	private function getFullFilePath(): string
-	{
-		$fileName = $this->getFileName();
-		return "gmail/tokens/$fileName.json";
+		gmail_tokens::where('userId', $this->userId)->delete();
 	}
 
 	private function getFileName()
