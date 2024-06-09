@@ -66,24 +66,6 @@ trait Configurable
 		gmail_tokens::where('userId', $this->userId)->delete();
 	}
 
-	private function getFileName()
-	{
-		if (property_exists(\get_class($this), 'userId') && $this->userId) {
-			$userId = $this->userId;
-		} elseif (auth()->user()) {
-			$userId = auth()->user()->id;
-		}
-
-		$credentialFilename = Arr::get($this->_config, 'gmail.cache.prefix', '').'-'.$this->_config['gmail.credentials_file_name'];
-		$allowMultipleCredentials = $this->_config['gmail.allow_multiple_credentials'];
-
-		if (isset($userId) && $allowMultipleCredentials) {
-			return sprintf('%s-%s', $credentialFilename, $userId);
-		}
-
-		return $credentialFilename;
-	}
-
 	/**
 	 * @return array
 	 */
@@ -121,15 +103,6 @@ trait Configurable
 	private function getUserScopes()
 	{
 		return $this->mapScopes();
-	}
-
-	private function getCacheStore(): Repository
-	{
-		$c = app('cache');
-		if ($store = Arr::get($this->_config, 'gmail.cache.store')) {
-			$c = $c->store($store);
-		}
-		return $c;
 	}
 
 	private function mapScopes()
