@@ -16,7 +16,7 @@ trait Configurable
 	protected $additionalScopes = [];
 	private $_config;
 
-	private $fetchedToken;
+	private static $fetchedToken;
 
 	public function __construct($config)
 	{
@@ -40,15 +40,15 @@ trait Configurable
 
 	protected function getAccessTokenFromCache(): ?array
 	{
-		if ($this->fetchedToken) {
-			return $this->fetchedToken;
+		if (self::$fetchedToken) {
+			return self::$fetchedToken;
 		}
 
-		if ($this->fetchedToken = gmail_tokens::where('userId', $this->userId)->first()) {
-			$this->fetchedToken = $this->fetchedToken->toArray();
+		if (self::$fetchedToken = gmail_tokens::where('userId', $this->userId)->first()) {
+			self::$fetchedToken = self::$fetchedToken->toArray();
 		}
 
-		return $this->fetchedToken;
+		return self::$fetchedToken;
 	}
 
 	protected function saveAccessTokenInCache(array $config): void
@@ -58,7 +58,7 @@ trait Configurable
 		$db->userId = $this->userId;
 		$db->save();
 
-		$this->fetchedToken = $db->toArray();
+		self::$fetchedToken = $db->toArray();
 	}
 
 	protected function deleteAccessTokenFromCache(): void
