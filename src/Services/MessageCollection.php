@@ -47,4 +47,9 @@ class MessageCollection extends Collection
 	{
 		return $this->message->pageToken;
 	}
+
+	public function getResultSizeEstimate()
+	{
+		return $this->message->getResultSizeEstimate();
+	}
 }

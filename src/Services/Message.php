@@ -22,6 +22,8 @@ class Message
 
 	public $client;
 
+	private $resultSizeEstimate;
+
 	/**
 	 * Optional parameter for getting single and multiple emails
 	 *
@@ -72,6 +74,8 @@ class Message
 		$mails = [];
 		$response = $this->getMessagesResponse();
 		$this->pageToken = method_exists($response, 'getNextPageToken') ? $response->getNextPageToken() : null;
+
+		$this->setResultSizeEstimate($response->getResultSizeEstimate());
 
 		$messages = $response->getMessages();
 
@@ -133,7 +137,7 @@ class Message
 	{
 		$this->client->setUseBatch(true);
 
-		$batch = $this->service->createBatch();
+		$batch = null;
 
 		$c = 0;
 		$messages = [];
@@ -145,13 +149,13 @@ class Message
 			$batch->add($this->getRequest($message->getId()), $key);
 			$c++;
 
-			if ($c/23 === \intval($c/23)) {
+			if ($c/20 === \intval($c/20)) {
 				$messagesBatch = $batch->execute();
+
 				foreach ($messagesBatch as $message) {
 					$messages[] = new Mail($message, false, $this->client->userId);
 				}
 				$batch = null;
-				sleep(1);
 			}
 		}
 
@@ -214,5 +218,15 @@ class Message
 		}
 
 		return $responseOrRequest;
+	}
+
+	public function getResultSizeEstimate()
+	{
+		return $this->resultSizeEstimate;
+	}
+
+	private function setResultSizeEstimate(int $resultSizeEstimate): void
+	{
+		$this->resultSizeEstimate = $resultSizeEstimate;
 	}
 }
