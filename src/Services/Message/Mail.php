@@ -424,7 +424,7 @@ class Mail extends GmailConnection
 				foreach ($parts as $part) {
 					if ($part->mimeType == $type) {
 						return $part->body->data;
-					//if there are no parts in payload, try to get data from body->data
+						//if there are no parts in payload, try to get data from body->data
 					} elseif ($this->payload->body->data) {
 						return $this->payload->body->data;
 					}

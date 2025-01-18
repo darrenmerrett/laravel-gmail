@@ -1,0 +1,16 @@
+#!/bin/bash -eu
+
+if [ $1 == "pre-commit" ];
+then
+	files=$(git diff --name-only --staged --diff-filter=d)
+
+	if [ ! -z "$files" ];
+	then
+		PHP_CS_FIXER_IGNORE_ENV=1 vendor/bin/php-cs-fixer fix --path-mode=intersection --config=./code_formatting/.php-cs-fixer.pre-commit.php $files
+		git add -u $files
+	fi
+
+	exit 0
+fi
+
+vendor/bin/php-cs-fixer $@

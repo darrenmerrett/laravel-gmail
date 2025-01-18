@@ -1,0 +1,8 @@
+{
+	"jsxBracketSameLine": false,
+	"jsxSingleQuote": true,
+	"plugins": ["prettier-plugin-organize-imports"],
+	"singleQuote": true,
+	"trailingComma": "es5",
+	"useTabs": true
+}

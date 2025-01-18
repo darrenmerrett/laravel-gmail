@@ -7,7 +7,6 @@ use DarrenMerrett\LaravelGmail\Services\Message\Mail;
 use DarrenMerrett\LaravelGmail\Traits\Filterable;
 use DarrenMerrett\LaravelGmail\Traits\SendsParameters;
 use Google_Service_Gmail;
-
 use Google\Service\Exception as GoogleException;
 
 class Message
@@ -151,7 +150,7 @@ class Message
 			$batch->add($this->getRequest($message->getId()), $key);
 			$c++;
 
-			if ($c/20 === \intval($c/20)) {
+			if ($c / 20 === \intval($c / 20)) {
 				$messagesBatch = $batch->execute();
 
 				foreach ($messagesBatch as $message) {

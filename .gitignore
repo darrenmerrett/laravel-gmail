@@ -4,3 +4,7 @@ composer.lock
 .DS_Store
 Thumbs.db
 .idea
+package-lock.json
+vendor
+node_modules
+.php-cs-fixer.cache
