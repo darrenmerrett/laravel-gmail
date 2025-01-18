@@ -7,8 +7,8 @@
 [![Monthly Downloads](https://poser.pugx.org/dacastro4/laravel-gmail/d/monthly)](https://packagist.org/packages/dacastro4/laravel-gmail)
 [![GitHub license](https://img.shields.io/github/license/dacastro4/laravel-gmail.svg)](https://github.com/dacastro4/laravel-gmail/blob/master/LICENSE)
 
-
 # Gmail
+
 Gmail API for Laravel 9
 
 You need to create an application in the [Google Console](https://console.developers.google.com/apis/credentials). Guidance [here](https://developers.google.com/gmail/api/quickstart/php#step_1_turn_on_the_api_name).
@@ -20,8 +20,8 @@ if you need **Laravel 8** compatibility please use version `5.0.x`.
 
 # Requirements
 
-* PHP ^8.0
-* Laravel 9
+- PHP ^8.0
+- Laravel 9
 
 # Installation
 
@@ -37,7 +37,7 @@ Or run
 
 Now open up `config/app.php` and add the service provider to your providers array.
 
-``` php
+```php
 'providers' => [
     Dacastro4\LaravelGmail\LaravelGmailServiceProvider::class,
 ]
@@ -45,7 +45,7 @@ Now open up `config/app.php` and add the service provider to your providers arra
 
 Now add the alias.
 
-``` php
+```php
 'aliases' => [
     'LaravelGmail' => Dacastro4\LaravelGmail\Facade\LaravelGmail::class,
 ]
@@ -75,7 +75,9 @@ Please, follow [Upgrading To 7.0 From 6.x Guide](https://laravel.com/docs/7.x/up
 Requires Laravel 6 and you only have to change the dependency to `"laravel/laravel": "^6.0"`
 
 # Migration from 1.0 to 2.0
+
 The only changed made was the multi credentials feature.
+
 - Change your composer.json from `"dacastro4/laravel-gmail": "^1.0"` to `"dacastro4/laravel-gmail": "^2.0"`
 
 I had to change version because of a typo and that might break apps calling those attributes.
@@ -83,27 +85,28 @@ I had to change version because of a typo and that might break apps calling thos
 All variable with the word "threat" was change to "thread" (yeah, I know.. sorry)
 Ex:
 
- Mail Class
-    `$threatId` => `$threadId`
+Mail Class
+`$threatId` => `$threadId`
 
- Replyable Class
-    `$mail->setReplyThreat()` => `$mail->setReplyThread()`
+Replyable Class
+`$mail->setReplyThreat()` => `$mail->setReplyThread()`
 
 and so on.
 
 # Migration from 0.6 to 1.0
+
 The only changed made was the multi credentials feature.
+
 - Change your composer.json from `"dacastro4/laravel-gmail": "^0.6"` to `"dacastro4/laravel-gmail": "^1.0"`
 
 If you don't want the multi user credentials, you don't have to do anything else, if you do, you're going to have to
 login again to create a new credentials file per user.
 
-
 # Configuration
 
 You only have to set the following variables on your `.env` file and you'll be on your way:
 
-``` dotenv
+```dotenv
 GOOGLE_PROJECT_ID=
 GOOGLE_CLIENT_ID=
 GOOGLE_CLIENT_SECRET=
@@ -117,30 +120,34 @@ To modify the scopes and the credentials file name, just run:
 Run `php artisan vendor:publish --provider="Dacastro4\LaravelGmail\LaravelGmailServiceProvider"` and modify the config file `config/gmail.php`.
 
 ### Allow multi user credentials
+
 To allow multi user credentials change `allow_multiple_credentials` to `true` in your config file or set the .env variable
 `GOOGLE_ALLOW_MULTIPLE_CREDENTIALS` to true if you're not using the config file.
+
 ### Allow encryption for json files
+
 To allow encryption for json files change `allow_json_encrypt` to `true` in your config file or set the .env variable
 `GOOGLE_ALLOW_JSON_ENCRYPT` to true if you're not using the config file.
 
 ### Available Scopes
 
-* all *(this one doesn't exists on Gmail Scopes, I added it.)*
-* compose
-* insert
-* labels
-* metadata
-* modify
-* readonly
-* send
-* settings_basic
-* settings_sharing
+- all _(this one doesn't exists on Gmail Scopes, I added it.)_
+- compose
+- insert
+- labels
+- metadata
+- modify
+- readonly
+- send
+- settings_basic
+- settings_sharing
 
 [More about Gmail API scopes](https://developers.google.com/gmail/api/auth/scopes)
 
 Note: To change the scopes, users have to logout and login again.
 
 #### Additional Scopes
+
 If for some reason you need to add additional scopes.
 
 Add additional scopes in URL Style in config/gmail.php
@@ -153,10 +160,10 @@ Add additional scopes in URL Style in config/gmail.php
     ],
 ```
 
-
 # Example
 
 ## Welcome Blade:
+
 ```blade
 <body>
     <h1>{{ LaravelGmail::user() }}</h1>
@@ -169,6 +176,7 @@ Add additional scopes in URL Style in config/gmail.php
 ```
 
 ## Routes:
+
 ```php
 Route::get('/oauth/gmail', function (){
     return LaravelGmail::redirect();
@@ -186,6 +194,7 @@ Route::get('/oauth/gmail/logout', function (){
 ```
 
 Then if in your controller or wherever you want to do your logic, you do something like:
+
 ```php
 $messages = LaravelGmail::message()->subject('test')->unread()->preload()->all();
 foreach ( $messages as $message ) {
@@ -193,15 +202,17 @@ foreach ( $messages as $message ) {
     $subject = $message->getSubject();
 }
 ```
+
 Note that if you don't preload the messages you have to do something like:
 ` $body = $message->load()->getSubject();`
 and after that you don't have to call it again.
 
 ## Pagination
-Use `$messages->hasNextPage()` to check whether next page is available. 
-Use `$messages->next()` to get the next page results, which uses the same parameters (result per page, filters, etc.) when you loaded the first page. 
-Use `$messages->getPageToken()` to get the unique identifier for the next page token. This is useful in creating a unique idendifier when storing the result in cache. 
-Generally speaking, it is a bad practice to use API for pagination. It is slow and costly. Therefore, it is recommended to retrieve the cached result moving between pages and only flush the cache when have to. 
+
+Use `$messages->hasNextPage()` to check whether next page is available.
+Use `$messages->next()` to get the next page results, which uses the same parameters (result per page, filters, etc.) when you loaded the first page.
+Use `$messages->getPageToken()` to get the unique identifier for the next page token. This is useful in creating a unique idendifier when storing the result in cache.
+Generally speaking, it is a bad practice to use API for pagination. It is slow and costly. Therefore, it is recommended to retrieve the cached result moving between pages and only flush the cache when have to.
 
 # Documentation
 
@@ -219,7 +230,6 @@ Generally speaking, it is a bad practice to use API for pagination. It is slow a
 
 `LaravelGmail::setUserId($account_id)->makeToken()` Set and Save AccessToken for $account_id (added v5.1.2)
 
-
 ## Sending
 
 ```
@@ -229,8 +239,8 @@ use Dacastro4\LaravelGmail\Services\Message\Mail;
 
 $mail = new Mail;
 ```
-For `to`, `from`, `cc` and `bcc`, you can set an array of emails and name or a string of email and name.
 
+For `to`, `from`, `cc` and `bcc`, you can set an array of emails and name or a string of email and name.
 
 `$mail->using( $token )` If you don't want to use the token file, you can use this function that sets the token to use in the request. It doesn't refresh
 
@@ -294,7 +304,6 @@ For `to`, `from`, `cc` and `bcc`, you can set an array of emails and name or a s
 
 `$mail->getHeader( $headerName, $regex = null )` Returns the header by name. Optionally, you can execute a regex on the value
 
-
 # Labels
 
 `$mail->markAsRead` Removes the 'UNREAD' label from the email.
@@ -327,7 +336,7 @@ https://developers.google.com/gmail/api/reference/rest/v1/users.labels/list
 
 Example:
 
-``` php
+```php
     $mailbox = new LaravelGmailClass(config(), $account->id);
     $labels = $mailbox->labelsList($userEmail);
 ```
@@ -338,7 +347,7 @@ https://developers.google.com/gmail/api/reference/rest/v1/users.labels/create
 
 Example:
 
-``` php
+```php
     $mailbox = new LaravelGmailClass(config(), LaravelGmail::user());
 
     $label = new \Google_Service_Gmail_Label($this);
@@ -354,7 +363,7 @@ https://developers.google.com/gmail/api/reference/rest/v1/users.labels/create
 
 Example:
 
-``` php
+```php
     $mailbox = new LaravelGmailClass(config(), LaravelGmail::user());
 
     $label = new \Google_Service_Gmail_Label($this);
@@ -363,7 +372,6 @@ Example:
     $label->setName('labelName');
     $mailbox->firstOrCreateLabel($userEmail, $label);
 ```
-
 
 ## Attachment
 
@@ -385,7 +393,6 @@ $attachment = new Attachment;
 `$attachment->getData` Get the all the information from the attachment. If you call `getAttachmentsWithData` you won't need this method.
 
 `$attachment->saveAttachmentTo($path = null, $filename = null, $disk = 'local')` Saves the attachment on the storage folder. You can pass the path, name and disk to use.
-
 
 ## Messages
 
@@ -419,7 +426,7 @@ All the possible filters are in the [Filterable Trait](https://github.com/dacast
 
 Of course you can use as a fluent api.
 
-``` php
+```php
 
     LaravelGmail::message()
                 ->from('someone@gmail.com')
@@ -450,7 +457,6 @@ $attachment = new Attachment;
 
 `$attachment->saveAttachmentTo($path = null, $filename = null, $disk = 'local')` Saves the attachment on the storage folder. You can pass the path, name and disk to use.
 
-
 ## Messages
 
 `LaravelGmail::message()->all( $pageToken = null )` Returns all the emails from the inbox
@@ -483,7 +489,7 @@ All the possible filters are in the [Filterable Trait](https://github.com/dacast
 
 Of course you can use as a fluent api.
 
-``` php
+```php
 
     LaravelGmail::message()
                 ->from('someone@gmail.com')
@@ -501,7 +507,7 @@ You can preload the body, header and the rest of every single email just by call
 
 Example:
 
-``` php
+```php
 
     LaravelGmail::message()
                 ->from('someone@gmail.com')
@@ -513,11 +519,12 @@ Example:
 ```
 
 ### Watch
+
 https://developers.google.com/gmail/api/reference/rest/v1/users/watch
 
 Example:
 
-``` php
+```php
     $mailbox = new LaravelGmailClass(config(), $account->id);
 
     // One watch per account + need reinit every 24h+
@@ -529,13 +536,13 @@ Example:
     $mailbox->setWatch('example@gmail.com', $rq);
 ```
 
-
 ### History
+
 https://developers.google.com/gmail/api/reference/rest/v1/users.history
 
 Example:
 
-``` php
+```php
     $historyList = (new LaravelGmailClass(config(), $account->id))
         ->historyList($data['emailAddress'], [
             'startHistoryId' => $startHistoryId,
@@ -546,7 +553,6 @@ Example:
         }
     }
 ```
-
 
 ### Frequent Issues
 

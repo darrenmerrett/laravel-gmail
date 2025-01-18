@@ -56,4 +56,11 @@ trait HasLabels
 
 		return $service->users_labels->create($userEmail, $newLabel);
 	}
+
+	public function getLabel($userId, $id, $optParams = [])
+	{
+		$service = new Google_Service_Gmail($this);
+
+		return $service->users_labels->get($userId, $id, $optParams);
+	}
 }

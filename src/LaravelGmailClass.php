@@ -4,6 +4,7 @@ namespace DarrenMerrett\LaravelGmail;
 
 use DarrenMerrett\LaravelGmail\Exceptions\AuthException;
 use DarrenMerrett\LaravelGmail\Services\Message;
+use DarrenMerrett\LaravelGmail\Services\Message\Mail;
 use Illuminate\Support\Facades\Redirect;
 
 class LaravelGmailClass extends GmailConnection
@@ -28,6 +29,15 @@ class LaravelGmailClass extends GmailConnection
 		}
 
 		return new Message($this);
+	}
+
+	public function mail()
+	{
+		if (!$this->getToken()) {
+			throw new AuthException('No credentials found.');
+		}
+
+		return new Mail();
 	}
 
 	/**

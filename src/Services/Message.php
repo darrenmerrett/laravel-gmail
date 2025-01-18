@@ -8,6 +8,8 @@ use DarrenMerrett\LaravelGmail\Traits\Filterable;
 use DarrenMerrett\LaravelGmail\Traits\SendsParameters;
 use Google_Service_Gmail;
 
+use Google\Service\Exception as GoogleException;
+
 class Message
 {
 	use SendsParameters;
@@ -153,6 +155,12 @@ class Message
 				$messagesBatch = $batch->execute();
 
 				foreach ($messagesBatch as $message) {
+					if ($message instanceof GoogleException) {
+						app('log')->error(print_r($message->getErrors(), true));
+						foreach ($messagesBatch as $k => $message) {
+							app('log')->error($k.' '.\get_class($message));
+						}
+					}
 					$messages[] = new Mail($message, false, $this->client->userId);
 				}
 				$batch = null;
