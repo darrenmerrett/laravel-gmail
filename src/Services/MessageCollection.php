@@ -17,7 +17,7 @@ class MessageCollection extends Collection
 	 * @param Message $message
 	 * @param array $items
 	 */
-	public function __construct($items = [], Message $message = null)
+	public function __construct($items = [], ?Message $message = null)
 	{
 		parent::__construct($items);
 		$this->message = $message;
